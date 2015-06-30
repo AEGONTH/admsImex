@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FileFormat fileName="" fileType="xlsx" locale="US">
+	<DataSet description="sampleData">
+		<DataSheet sheetName="Sheet1" sheetIndex="0"> <!-- index start with 0, 1, 2,...  -->
+			<!-- <DataCell row="1" column="A" dataType="TEXT|NUMBER|DATE|BOOLEAN|BLANK|FORMULA|ERROR" dataFormat="" fieldName="fieldAaa" defaultValue="" /> -->
+			<DataCell row="2" column="B" dataType="DATE" dataFormat="dd/MM/yyyy" fieldName="reportAsOf" />
+			<DataCell row="2" column="D" dataType="DATE" dataFormat="yyyyMMMdd" fieldName="testDateString" />
+			<DataRecord listSourceName="personList" beginRow="1" endRow="20">
+				<BeginRecordCondition column="B" comparator="EQ" checkValue="sampleBegin" firstRowAsData="TRUE|FALSE"/>
+				
+				<DataCell row="1" column="B" dataType="NUMBER" dataFormat="0" fieldName="index" />
+				<DataCell row="1" column="C" dataType="TEXT" fieldName="firstName" autoTrim="TRUE"/>
+				<DataCell row="1" column="D" dataType="NUMBER" dataFormat="#,##0.00" fieldName="total" />
+				<!-- <EndRecordCondition
+					column="A"        : excel column ex: A, B, C, AA, AB, etc
+					comparator="EQ"   : comparator operation  EQ (Equal), NE (Not Equal), BLANK (Blank cell or Null cell)
+					checkValue="abc"  : some text, some number or blank cell
+					/> -->
+				<EndRecordCondition column="B" comparator="EQ" checkValue="end" />
+			</DataRecord>
+			<DataRecord listSourceName="testList" beginRow="1" endRow="20">
+				<DataCell row="1" column="G" dataType="TEXT" fieldName="test" />
+				<EndRecordCondition column="G" comparator="EQ" checkValue="END" />
+			</DataRecord>
+		</DataSheet>
+		<DataSheet sheetIndex="1" skipWhenNull="TRUE|FALSE" /> <!-- set skipWhenNull to 'TRUE' to avoid exception when this Sheet is not found. Default value is 'FALSE' -->
+
+	</DataSet>
+</FileFormat>
