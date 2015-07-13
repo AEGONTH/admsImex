@@ -299,11 +299,12 @@ public class CellDefinition {
 		if(!StringUtils.isBlank(value)) {
 			switch (this.dataType) {
 			case NUMBER:
-				Object o = getDecimalFormatter().parse(value);
-				if (o instanceof Long)
-					return new BigDecimal((Long) o);
-				
-				return getDecimalFormatter().parse(value);
+//				Object o = getDecimalFormatter().parse(value);
+//				if (o instanceof Long)
+//					return new BigDecimal((Long) o);
+//				
+//				return getDecimalFormatter().parse(value);
+				return new BigDecimal(value.toString());
 
 			case DATE:
 				return getDateFormatter().parse(value);
