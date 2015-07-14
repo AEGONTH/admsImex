@@ -50,13 +50,6 @@ public class ExcelFormatReader {
 			{
 				for (SheetDefinition sheetDefinition : this.fileFormatDefinition.getDataSetDefinition().getSheetDefinitionList())
 				{
-					// do
-					// {
-					// }
-					// while
-					// (!Boolean.TRUE.equals(sheetDefinition.getRepeatSheet())
-					// /*|| (sheet == null )*/);
-
 					Sheet sheet = getSheet(sheetDefinition);
 
 					if (sheet == null && Boolean.TRUE.equals(sheetDefinition.getSkipWhenNull()))

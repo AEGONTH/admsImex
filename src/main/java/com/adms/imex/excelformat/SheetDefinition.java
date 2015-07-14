@@ -17,22 +17,13 @@ public class SheetDefinition extends CellDefinitionContainer {
 	private Integer sheetIndex;
 
 	@XStreamAsAttribute
+	private String sheetIndexs;
+
+	@XStreamAsAttribute
 	private Boolean skipWhenNull;
 
 	@XStreamAsAttribute
 	private Boolean displayGridlines;
-
-	@XStreamAsAttribute
-	private Boolean repeatSheet;
-
-	@XStreamAsAttribute
-	private Boolean repeatUntilNull;
-
-	@XStreamAsAttribute
-	private Integer repeatUntilIndex;
-
-	@XStreamAsAttribute
-	private String repeatUntilSheetname;
 
 	@XStreamImplicit(itemFieldName = "DataRecord")
 	private List<RecordDefinition> recordDefinitionList;
@@ -75,6 +66,16 @@ public class SheetDefinition extends CellDefinitionContainer {
 		this.sheetIndex = sheetIndex;
 	}
 
+	public String getSheetIndexs()
+	{
+		return sheetIndexs;
+	}
+
+	public void setSheetIndexs(String sheetIndexs)
+	{
+		this.sheetIndexs = sheetIndexs;
+	}
+
 	public Boolean getSkipWhenNull()
 	{
 		return skipWhenNull;
@@ -93,46 +94,6 @@ public class SheetDefinition extends CellDefinitionContainer {
 	public void setDisplayGridlines(Boolean displayGridlines)
 	{
 		this.displayGridlines = displayGridlines;
-	}
-
-	public Boolean getRepeatSheet()
-	{
-		return repeatSheet;
-	}
-
-	public void setRepeatSheet(Boolean repeatSheet)
-	{
-		this.repeatSheet = repeatSheet;
-	}
-
-	public Boolean getRepeatUntilNull()
-	{
-		return repeatUntilNull;
-	}
-
-	public void setRepeatUntilNull(Boolean repeatUntilNull)
-	{
-		this.repeatUntilNull = repeatUntilNull;
-	}
-
-	public Integer getRepeatUntilIndex()
-	{
-		return repeatUntilIndex;
-	}
-
-	public void setRepeatUntilIndex(Integer repeatUntilIndex)
-	{
-		this.repeatUntilIndex = repeatUntilIndex;
-	}
-
-	public String getRepeatUntilSheetname()
-	{
-		return repeatUntilSheetname;
-	}
-
-	public void setRepeatUntilSheetname(String repeatUntilSheetname)
-	{
-		this.repeatUntilSheetname = repeatUntilSheetname;
 	}
 
 	public List<RecordDefinition> getRecordDefinitionList()
@@ -178,7 +139,7 @@ public class SheetDefinition extends CellDefinitionContainer {
 	@Override
 	public String toString()
 	{
-		return "SheetDefinition [sheetName=" + sheetName + ", outputSheetName=" + outputSheetName + ", sheetIndex=" + sheetIndex + ", skipWhenNull=" + skipWhenNull + ", displayGridlines=" + displayGridlines + ", rowHeightDefinitionList=" + rowHeightDefinitionList + ", columnWidthDefinitionList=" + columnWidthDefinitionList + ", recordDefinitionList=" + recordDefinitionList + "]";
+		return "SheetDefinition [sheetName=" + sheetName + ", outputSheetName=" + outputSheetName + ", sheetIndex=" + sheetIndex + ", sheetIndexs=" + sheetIndexs + ", skipWhenNull=" + skipWhenNull + ", displayGridlines=" + displayGridlines + ", rowHeightDefinitionList=" + rowHeightDefinitionList + ", columnWidthDefinitionList=" + columnWidthDefinitionList + ", recordDefinitionList=" + recordDefinitionList + "]";
 	}
 
 }
