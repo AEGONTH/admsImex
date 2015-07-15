@@ -7,6 +7,12 @@ import java.io.ByteArrayOutputStream;
 
 public class ObjectUtil {
 
+	/**
+	 * Returns a deeply cloned java bean.
+	 *
+	 * @param fromBean java bean to be cloned.
+	 * @return a new java bean cloned from fromBean.
+	 */
 	public static Object deepClone(Object fromBean)
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
