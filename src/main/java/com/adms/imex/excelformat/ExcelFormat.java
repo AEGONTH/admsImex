@@ -2,38 +2,95 @@ package com.adms.imex.excelformat;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import com.adms.imex.util.ObjectUtil;
 import com.adms.imex.util.XmlParser;
 import com.thoughtworks.xstream.converters.Converter;
 
 public class ExcelFormat {
 
 	private FileFormatDefinition fileFormat;
+	private XmlParser xmlParser = new XmlParser();
 
 	public ExcelFormat(File fileFormat)
-			throws FileNotFoundException
+			throws Exception
 	{
 		this(new FileInputStream(fileFormat));
 	}
 
-	public ExcelFormat(InputStream fileFormat)
+	public ExcelFormat(InputStream fileFormat) throws Exception
 	{
-		this.fileFormat = (FileFormatDefinition) new XmlParser().fromXml(fileFormat, getAliasTypeMap(), getConverterList());
+		this.fileFormat = (FileFormatDefinition) this.xmlParser.fromXml(fileFormat, getAliasTypeMap(), getConverterList());
+		checkDuplicateSheetConfig();
 		setRevertReference();
 	}
 
 	public FileFormatDefinition getFileFormat()
 	{
 		return fileFormat;
+	}
+
+	private void checkDuplicateSheetConfig() throws Exception
+	{
+		if (CollectionUtils.isNotEmpty(this.fileFormat.getDataSetDefinition().getSheetDefinitionList()))
+		{
+			ArrayList<SheetDefinition> removeList = new ArrayList<SheetDefinition>();
+			ArrayList<SheetDefinition> cloneList = new ArrayList<SheetDefinition>();
+
+			for (SheetDefinition s : this.fileFormat.getDataSetDefinition().getSheetDefinitionList())
+			{
+				String sheetIndexs = s.getSheetIndexs();
+
+				if (s.getSheetIndex() != null && StringUtils.isNotBlank(sheetIndexs))
+				{
+					throw new Exception("sheetIndex conflicted: " + s);
+				}
+
+				if (StringUtils.isNotBlank(sheetIndexs))
+				{
+					if (StringUtils.containsOnly(sheetIndexs, " 0123456789,"))
+					{
+						StringTokenizer st = new StringTokenizer(sheetIndexs, ",");
+						while (st.hasMoreElements())
+						{
+							String sheetIndex = st.nextElement().toString().trim();
+							if (StringUtils.isNotBlank(sheetIndex))
+							{
+								SheetDefinition cs = (SheetDefinition) ObjectUtil.deepClone(s);
+								cs.setSheetIndex(Integer.parseInt(sheetIndex));
+
+								cloneList.add(cs);
+							}
+						}
+						removeList.add(s);
+					}
+					else
+					{
+						throw new Exception("invalid character for attribute [sheetIndexs: '" + sheetIndexs + "']");
+					}
+				}
+			}
+
+			if (CollectionUtils.isNotEmpty(removeList))
+			{
+				this.fileFormat.getDataSetDefinition().getSheetDefinitionList().removeAll(removeList);
+			}
+
+			if (CollectionUtils.isNotEmpty(cloneList))
+			{
+				this.fileFormat.getDataSetDefinition().getSheetDefinitionList().addAll(cloneList);
+			}
+		}
 	}
 
 	private void setRevertReference()
@@ -62,6 +119,16 @@ public class ExcelFormat {
 						{
 							c.setSheetDefinition(s);
 						}
+					}
+
+					if (r.getBeginRecordCondition() != null)
+					{
+						r.getBeginRecordCondition().setSheetDefinition(s);
+					}
+
+					if (r.getEndRecordCondition() != null)
+					{
+						r.getEndRecordCondition().setSheetDefinition(s);
 					}
 				}
 			}

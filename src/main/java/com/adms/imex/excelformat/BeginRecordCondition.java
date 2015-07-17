@@ -60,7 +60,7 @@ public class BeginRecordCondition extends CellDefinition {
 	@Override
 	public String toString()
 	{
-		return "BeginRecordCondition [comparator=" + comparator + ", checkValue=" + checkValue + ", checkType=" + checkType + ", firstRowAsData=" + firstRowAsData + "]";
+		return "BeginRecordCondition [" + super.toString() + ", comparator=" + comparator + ", checkValue=" + checkValue + ", checkType=" + checkType + ", firstRowAsData=" + firstRowAsData + "]";
 	}
 
 }

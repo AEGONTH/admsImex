@@ -299,11 +299,12 @@ public class CellDefinition {
 		if(!StringUtils.isBlank(value)) {
 			switch (this.dataType) {
 			case NUMBER:
-				Object o = getDecimalFormatter().parse(value);
-				if (o instanceof Long)
-					return new BigDecimal((Long) o);
-				
-				return getDecimalFormatter().parse(value);
+//				Object o = getDecimalFormatter().parse(value);
+//				if (o instanceof Long)
+//					return new BigDecimal((Long) o);
+//				
+//				return getDecimalFormatter().parse(value);
+				return new BigDecimal(value.toString());
 
 			case DATE:
 				return getDateFormatter().parse(value);
@@ -318,7 +319,7 @@ public class CellDefinition {
 	@Override
 	public String toString()
 	{
-		return "CellDefinition [row=" + row + ", currentRow=" + currentRow + ", column=" + column + ", templateRow=" + templateRow + ", templateColumn=" + templateColumn + ", rowMergeFrom=" + rowMergeFrom + ", rowMergeTo=" + rowMergeTo + ", columnMergeFrom=" + columnMergeFrom + ", columnMergeTo=" + columnMergeTo + ", fieldName=" + fieldName + ", defaultValue=" + defaultValue + ", dataType=" + dataType + ", recoveryType=" + recoveryType + ", dataFormat=" + dataFormat + ", autoTrim=" + autoTrim + ", ignoreError=" + ignoreError + ", sheetDefinition=" + sheetDefinition + "]";
+		return "CellDefinition [row=" + row + ", currentRow=" + currentRow + ", column=" + column + ", templateRow=" + templateRow + ", templateColumn=" + templateColumn + ", rowMergeFrom=" + rowMergeFrom + ", rowMergeTo=" + rowMergeTo + ", columnMergeFrom=" + columnMergeFrom + ", columnMergeTo=" + columnMergeTo + ", fieldName=" + fieldName + ", defaultValue=" + defaultValue + ", dataType=" + dataType + ", recoveryType=" + recoveryType + ", dataFormat=" + dataFormat + ", autoTrim=" + autoTrim + ", ignoreError=" + ignoreError + "]";
 	}
 
 }
