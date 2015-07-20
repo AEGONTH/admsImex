@@ -21,6 +21,7 @@ public class ExcelFormat {
 
 	private FileFormatDefinition fileFormat;
 	private XmlParser xmlParser = new XmlParser();
+	private String fileFormatXml;
 
 	public ExcelFormat(File fileFormat)
 			throws Exception
@@ -31,8 +32,16 @@ public class ExcelFormat {
 	public ExcelFormat(InputStream fileFormat) throws Exception
 	{
 		this.fileFormat = (FileFormatDefinition) this.xmlParser.fromXml(fileFormat, getAliasTypeMap(), getConverterList());
-		checkDuplicateSheetConfig();
+		doReplicateSheetConfig();
+
+		this.fileFormatXml = this.xmlParser.toXml(this.fileFormat, getAliasTypeMap(), getConverterList());
+
 		setRevertReference();
+	}
+
+	public String exportFileFormat()
+	{
+		return this.fileFormatXml;
 	}
 
 	public FileFormatDefinition getFileFormat()
@@ -40,7 +49,7 @@ public class ExcelFormat {
 		return fileFormat;
 	}
 
-	private void checkDuplicateSheetConfig() throws Exception
+	private void doReplicateSheetConfig() throws Exception
 	{
 		if (CollectionUtils.isNotEmpty(this.fileFormat.getDataSetDefinition().getSheetDefinitionList()))
 		{
@@ -58,26 +67,21 @@ public class ExcelFormat {
 
 				if (StringUtils.isNotBlank(sheetIndexs))
 				{
-					if (StringUtils.containsOnly(sheetIndexs, " 0123456789,"))
-					{
-						StringTokenizer st = new StringTokenizer(sheetIndexs, ",");
-						while (st.hasMoreElements())
-						{
-							String sheetIndex = st.nextElement().toString().trim();
-							if (StringUtils.isNotBlank(sheetIndex))
-							{
-								SheetDefinition cs = (SheetDefinition) ObjectUtil.deepClone(s);
-								cs.setSheetIndex(Integer.parseInt(sheetIndex));
+					String sheetIndexs1 = separateString(sheetIndexs);
 
-								cloneList.add(cs);
-							}
-						}
-						removeList.add(s);
-					}
-					else
+					StringTokenizer st = new StringTokenizer(sheetIndexs1, ",");
+					while (st.hasMoreElements())
 					{
-						throw new Exception("invalid character for attribute [sheetIndexs: '" + sheetIndexs + "']");
+						String sheetIndex = st.nextElement().toString().trim();
+						if (StringUtils.isNotBlank(sheetIndex))
+						{
+							SheetDefinition cs = (SheetDefinition) ObjectUtil.deepClone(s);
+							cs.setSheetIndex(Integer.parseInt(sheetIndex));
+
+							cloneList.add(cs);
+						}
 					}
+					removeList.add(s);
 				}
 			}
 
@@ -91,6 +95,88 @@ public class ExcelFormat {
 				this.fileFormat.getDataSetDefinition().getSheetDefinitionList().addAll(cloneList);
 			}
 		}
+	}
+
+	private static String separateString(String s) throws Exception
+	{
+		if (StringUtils.isNotBlank(s))
+		{
+			if (StringUtils.containsOnly(s, " -,1234567890"))
+			{
+				String result = "";
+				String ss = s.replaceAll(" ", "");
+				
+				StringTokenizer st = new StringTokenizer(ss, ",");
+				while (st.hasMoreElements())
+				{
+					String sss = st.nextElement().toString().trim();
+					if (StringUtils.isNotBlank(sss))
+					{
+						result += ", " + translateRange(sss);
+					}
+				}
+
+				return result.replaceFirst(", ", "");
+			}
+			else
+			{
+				throw new Exception("invalid character for attribute sheetIndexs[" + s + "]");
+			}
+		}
+		else
+		{
+			return "";
+		}
+	}
+
+	private static String translateRange(String s)
+			throws Exception
+	{
+		if (StringUtils.isNotBlank(s))
+		{
+			String ss = s.replaceAll(" ", "");
+			
+			if (ss.indexOf("-") == -1)
+			{
+				return ss;
+			}
+			else
+			{
+				if (ss.indexOf(",-") != -1 || ss.indexOf("-,") != -1 || ss.startsWith("-") || ss.endsWith("-"))
+				{
+					throw new Exception("invalid range expression [" + s + "]");
+				}
+
+				String begin = ss.substring(0, ss.indexOf('-')).trim();
+				String end = ss.substring(ss.indexOf('-') + 1).trim();
+				return a(Integer.parseInt(begin), Integer.parseInt(end));
+			}
+		}
+		else
+		{
+			return "";
+		}
+	}
+
+	private static String a(int begin, int end) throws Exception
+	{
+		StringBuilder sb = new StringBuilder("");
+		if (begin < end)
+		{
+			for (int i = begin; i <= end; i++)
+			{
+				sb.append(String.valueOf(i));
+
+				if (i < end)
+					sb.append(String.valueOf(", "));
+			}
+		}
+		else
+		{
+			throw new Exception("invalid range expression begin number [" + begin + "] cannot more than end number [" + end + "]");
+		}
+
+		return sb.toString();
 	}
 
 	private void setRevertReference()
