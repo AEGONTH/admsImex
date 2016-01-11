@@ -304,6 +304,9 @@ public class CellDefinition {
 //					return new BigDecimal((Long) o);
 //				
 //				return getDecimalFormatter().parse(value);
+				if(value.toString().contains(",")) {
+					value = value.replaceAll(",", "");
+				}
 				return new BigDecimal(value.toString());
 
 			case DATE:
